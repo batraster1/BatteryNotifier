@@ -1,2 +1,2 @@
-# LearnAnko
-Sample project for learn Anko
+# BaatterNotifier
+Using the Anko framework on Kotlin
