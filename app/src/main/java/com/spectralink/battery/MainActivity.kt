@@ -1,52 +1,36 @@
 package com.spectralink.battery
 
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.support.v7.app.AppCompatActivity
-import org.jetbrains.anko.*
-import org.jetbrains.anko.design.snackbar
-import org.jetbrains.anko.sdk25.coroutines.onClick
+import org.jetbrains.anko.AnkoLogger
+import org.jetbrains.anko.info
+import org.jetbrains.anko.setContentView
 
-class MainActivity : AppCompatActivity() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        verticalLayout {
-            val name = editText()
-            button("Show Toast") {
-                onClick { toast("Hello, ${name.text}!") }
-            }
+class MainActivity : AppCompatActivity(), AnkoLogger {
+    var batteryBroadcastReceiver = BatteryBroadcastReceiver();
 
-            button("Show Alert"){
-                onClick {
-                    alert("Happy Coding!", "Hello, ${name.text}!") {
-                        yesButton { toast("Oh…") }
-                        noButton {}
-                    }.show()
-                }
-            }
+    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
+        super.onCreate(savedInstanceState, persistentState)
+        MainActivityUI().setContentView(this)
+    }
 
-            button("Show Selector"){
-                onClick {
-                    val code = listOf("Kotlin", "Java", "C++", "PHP")
-                    selector("Hello, ${name.text}! Which languages you love?", code, { dialogInterface, i ->
-                        toast("So you're love ${code[i]}, right?")
-                    })
-                }
-            }
+    override fun onStart() {
+        val batteryLevelFilter = IntentFilter()
+        batteryLevelFilter.addAction(Intent.ACTION_POWER_CONNECTED);
+        batteryLevelFilter.addAction(Intent.ACTION_POWER_DISCONNECTED);
+        batteryLevelFilter.addAction(Intent.ACTION_BATTERY_CHANGED);
+        registerReceiver(this.batteryBroadcastReceiver, batteryLevelFilter)
+        super.onStart()
+        info { "onStart called" }
+    }
 
-            button("Show Snackbar"){
-                onClick {
-                    snackbar(name, "Hello, ${name.text}!")
-
-                }
-            }
-
-            button("Show Progress Bar"){
-                onClick {
-                    indeterminateProgressDialog("Hello, ${name.text}! Please wait...").show()
-                }
-            }
-        }
-
+    override fun onStop() {
+        unregisterReceiver(this.batteryBroadcastReceiver)
+        super.onStop()
+        info { "onStop called" }
     }
 }
