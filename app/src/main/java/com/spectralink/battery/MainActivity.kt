@@ -7,12 +7,12 @@ import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.view.View
+import android.widget.CompoundButton
 import android.widget.SeekBar
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
-import org.jetbrains.anko.sdk25.coroutines.onCheckedChange
+import org.jetbrains.anko.toast
 
 
 class MainActivity() : AppCompatActivity(), AnkoLogger {
@@ -30,10 +30,14 @@ class MainActivity() : AppCompatActivity(), AnkoLogger {
     }
 
     private fun initOnChangeListeners() {
-        enableNotifications.setOnCheckedChangeListener { _, b -> prefs.enabled = b }
+        enableNotifications.setOnCheckedChangeListener { buttonView, isChecked ->
+            info {"toggle value is ${isChecked}"}
+            prefs.enabled = isChecked
+        }
         level1.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 prefs.level1 = progress
+                toast("Battery notification level 1 set to ${progress}")
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {
@@ -52,6 +56,7 @@ class MainActivity() : AppCompatActivity(), AnkoLogger {
         level2.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 prefs.level2 = progress
+                toast("Battery notification level 2 set to ${progress}")
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {

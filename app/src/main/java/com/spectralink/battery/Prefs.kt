@@ -25,10 +25,10 @@ class Prefs (context: Context) {
 
     var enabled: Boolean
         get() = prefs.getBoolean(ENABLED, false)
-        set(enabled) = prefs.edit().putBoolean(VIBRATE1, enabled).apply()
+        set(enabled) = prefs.edit().putBoolean(ENABLED, enabled).apply()
 
     var level1: Int
-        get() = prefs.getInt(LEVEL1, 100)
+        get() = prefs.getInt(LEVEL1, 50)
         set(level1) = prefs.edit().putInt(LEVEL1, level1).apply()
 
     var vibrateEnabled1: Boolean
@@ -36,7 +36,7 @@ class Prefs (context: Context) {
         set(vibrateEnabled1) = prefs.edit().putBoolean(VIBRATE1, vibrateEnabled1).apply()
 
     var level2: Int
-        get() = prefs.getInt(LEVEL2, 100)
+        get() = prefs.getInt(LEVEL2, 50)
         set(level2) = prefs.edit().putInt(LEVEL2, level2).apply()
 
     var vibrateEnabled2: Boolean

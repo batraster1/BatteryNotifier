@@ -25,18 +25,12 @@ class BatteryBroadcastReceiver : BroadcastReceiver(), AnkoLogger {
         prefs.level = level
 
         val plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0)
-
-        var status = ""
-        when (plugged) {
-            BatteryManager.BATTERY_PLUGGED_WIRELESS -> status = "Plugged in Wireless"
-            BatteryManager.BATTERY_PLUGGED_USB -> status = "Plugged in USB"
-            BatteryManager.BATTERY_PLUGGED_AC -> status = "Plugged in AC"
-            else -> status = NOT_PLUGGED_IN
-        }
-        prefs.status = status
-        if(status == NOT_PLUGGED_IN && prefs.enabled){
-            if(level < prefs.level1){
-                doNotification(level, status, context)
+        val isPluggedIn = plugged == BatteryManager.BATTERY_PLUGGED_AC || plugged == BatteryManager.BATTERY_PLUGGED_USB || plugged == BatteryManager.BATTERY_PLUGGED_WIRELESS
+        info { "Current battery level: {$level} , is plugged in ${isPluggedIn}" }
+        info{"Battery monitoring enabled ${prefs.enabled}"}
+        if(!isPluggedIn && prefs.enabled){
+            if(level <= prefs.level1){
+                doNotification(level, context)
                 if(prefs.vibrateEnabled1) vibrate(context)
             }
         }
@@ -49,7 +43,7 @@ class BatteryBroadcastReceiver : BroadcastReceiver(), AnkoLogger {
         vibrator.vibrate(2000)
     }
 
-    private fun doNotification(level: Int, status: String, context: Context) {
+    private fun doNotification(level: Int, context: Context) {
 
         val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val mBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
