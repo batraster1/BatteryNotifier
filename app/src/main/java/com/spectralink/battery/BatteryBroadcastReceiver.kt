@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.media.RingtoneManager
 import android.os.BatteryManager
+import android.os.VibrationEffect
 import android.os.Vibrator
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
@@ -15,6 +16,8 @@ import org.jetbrains.anko.info
 class BatteryBroadcastReceiver : BroadcastReceiver(), AnkoLogger {
 
     val CHANNEL_ID = "com.spectralink.battery"
+    val NOT_PLUGGED_IN = "Not plugged in"
+    val NOTIFICATION_ID = 445464
 
     override fun onReceive(context: Context, intent: Intent) {
         info {"BatteryBroadcastReceiver called"}
@@ -28,14 +31,16 @@ class BatteryBroadcastReceiver : BroadcastReceiver(), AnkoLogger {
             BatteryManager.BATTERY_PLUGGED_WIRELESS -> status = "Plugged in Wireless"
             BatteryManager.BATTERY_PLUGGED_USB -> status = "Plugged in USB"
             BatteryManager.BATTERY_PLUGGED_AC -> status = "Plugged in AC"
-            else -> status = "Not plugged in"
+            else -> status = NOT_PLUGGED_IN
         }
         prefs.status = status
-        info { "level ${level} saved level1  ${prefs.level1}"}
-        if(level < prefs.level1){
-            doNotification(level, status, context)
-            if(prefs.vibrateEnabled1) vibrate(context)
+        if(status == NOT_PLUGGED_IN && prefs.enabled){
+            if(level < prefs.level1){
+                doNotification(level, status, context)
+                if(prefs.vibrateEnabled1) vibrate(context)
+            }
         }
+
 
     }
 
@@ -48,19 +53,18 @@ class BatteryBroadcastReceiver : BroadcastReceiver(), AnkoLogger {
 
         val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val mBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.navigation_empty_icon)
-                .setContentTitle("Battery Level")
-                .setContentText("Level ${level} and status ${status}")
+                .setSmallIcon(R.drawable.tooltip_frame_dark)
+                .setContentTitle("Battery Low Warning")
+                .setContentText("Level is ${level} , please charge")
                 .setStyle(NotificationCompat.BigTextStyle()
-                        .bigText("Level ${level} and status ${status}"))
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                        .bigText("Level is ${level} , please charge"))
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setSound(soundUri)
 
         val notificationManager = NotificationManagerCompat.from(context)
 
-// notificationId is a unique int for each notification that you must define
-        notificationManager?.notify(12345, mBuilder.build())
-        info { "stub notification ${level} ${status}" }
+
+        notificationManager?.notify(NOTIFICATION_ID, mBuilder.build())
     }
 
 }

@@ -8,9 +8,11 @@ import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import android.widget.SeekBar
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
+import org.jetbrains.anko.sdk25.coroutines.onCheckedChange
 
 
 class MainActivity() : AppCompatActivity(), AnkoLogger {
@@ -22,29 +24,56 @@ class MainActivity() : AppCompatActivity(), AnkoLogger {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         loadViewFromSharedPrefs()
-        apply.setOnClickListener(applyOnClickListener())
         createNotificationChannel()
+
+        initOnChangeListeners()
     }
 
-    fun applyOnClickListener(): (View) -> Unit {
-        return {
-            prefs.level1 = level1.text.toString().toInt()
-            prefs.vibrateEnabled1 = checkBoxVibrate1.isChecked
-            prefs.level2 = level2.text.toString().toInt()
-            prefs.vibrateEnabled2 = checkBoxVibrate2.isChecked
-            prefs.enabled = enableNotifications.isEnabled
+    private fun initOnChangeListeners() {
+        enableNotifications.setOnCheckedChangeListener { _, b -> prefs.enabled = b }
+        level1.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                prefs.level1 = progress
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar) {
+
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar) {
+
+            }
+        })
+
+        checkBoxVibrate1.setOnCheckedChangeListener { buttonView, isChecked ->
+            prefs.vibrateEnabled1 = isChecked
+        }
+
+        level2.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                prefs.level2 = progress
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar) {
+
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar) {
+
+            }
+        })
+
+        checkBoxVibrate2.setOnCheckedChangeListener { buttonView, isChecked ->
+            prefs.vibrateEnabled2 = isChecked
         }
     }
 
     fun loadViewFromSharedPrefs() {
-        info { "from shared prefs" }
-
-
         checkBoxVibrate1.setChecked(prefs.vibrateEnabled1)
         checkBoxVibrate2.setChecked(prefs.vibrateEnabled2)
 
-        level1.setText(prefs.level1.toString())
-        level2.setText(prefs.level2.toString())
+        level1.progress = prefs.level1
+        level2.progress = prefs.level2
 
         enableNotifications.setChecked(prefs.enabled)
     }
@@ -56,11 +85,6 @@ class MainActivity() : AppCompatActivity(), AnkoLogger {
         batteryLevelFilter.addAction(Intent.ACTION_BATTERY_CHANGED);
         registerReceiver(this.batteryBroadcastReceiver, batteryLevelFilter)
         super.onStart()
-    }
-
-    override fun onStop() {
-        super.onStop()
-
     }
 
     private fun createNotificationChannel() {
