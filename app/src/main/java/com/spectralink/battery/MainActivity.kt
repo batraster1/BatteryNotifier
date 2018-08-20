@@ -1,5 +1,6 @@
 package com.spectralink.battery
 
+
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Intent
@@ -7,11 +8,11 @@ import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.widget.CompoundButton
 import android.widget.SeekBar
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
+import org.jetbrains.anko.setContentView
 import org.jetbrains.anko.toast
 
 
@@ -22,7 +23,8 @@ class MainActivity() : AppCompatActivity(), AnkoLogger {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        //setContentView(R.layout.activity_main)
+        MainActivityUI().setContentView(this)
         loadViewFromSharedPrefs()
         createNotificationChannel()
 
