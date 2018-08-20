@@ -1,44 +1,50 @@
 package com.spectralink.battery
 
 import android.view.Gravity
+import android.widget.LinearLayout
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
-class MainActivityUI : AnkoComponent<MainActivity> {
+class MainActivityUI : AnkoComponent<MainActivity>, AnkoLogger {
+    val notificationTypes = listOf("Toast", "Sound")
     override fun createView(ui: AnkoContext<MainActivity>) = with(ui) {
-        val notificationTypes = listOf("Toast", "Sound")
+        info { "initView method" }
         verticalLayout {
-
-            gravity = Gravity.CENTER
-            padding = dip(20)
-
             val lowBatteryAlertLevel1 = editText({
                 hint = "battery Level1"
             })
+            lowBatteryAlertLevel1.setText(prefs.level1)
 
-            button("Notification type", {
-                onClick {
-                    selector("Notification when battery goes below ${lowBatteryAlertLevel1.text}", notificationTypes, { dialogInterface, i ->
-                        toast("Phone will ${notificationTypes[i]} when battery level is below ${lowBatteryAlertLevel1.text}")
-                        prefs.level1 = lowBatteryAlertLevel1.text.toString()
-                        prefs.notificationLevel1 = notificationTypes[i]
-                    })
+            radioGroup() {
+                orientation = LinearLayout.HORIZONTAL
+                radioButton {
+                    text = "Toast"
                 }
-            })
+                radioButton {
+                    text = "Sound"
+                }
+
+
+                gravity = Gravity.CENTER
+            }
+
 
             val lowBatteryAlertLevel2 = editText({
                 hint = "battery Level2"
             })
-
-            button("Notification type", {
-                onClick {
-                    selector("Notification when battery goes below ${lowBatteryAlertLevel2.text}", notificationTypes, { dialogInterface, i ->
-                        toast("Phone will ${notificationTypes[i]} when battery level is below ${lowBatteryAlertLevel2.text}")
-                        prefs.level2 = lowBatteryAlertLevel1.text.toString()
-                        prefs.notificationLevel2 = notificationTypes[i]
-                    })
+            lowBatteryAlertLevel2.setText(prefs.level2)
+            radioGroup() {
+                orientation = LinearLayout.HORIZONTAL
+                radioButton {
+                    text = "Toast"
                 }
-            })
+                radioButton {
+                    text = "Sound"
+                }
+
+
+                gravity = Gravity.CENTER
+            }
 
             textView {
                 text = "Battery Level is ${prefs.level}"
