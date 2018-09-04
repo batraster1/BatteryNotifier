@@ -1,11 +1,10 @@
-package com.spectralink.battery
+package com.spectralink.slnkbattlife
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.media.RingtoneManager
 import android.os.BatteryManager
-import android.os.VibrationEffect
 import android.os.Vibrator
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
@@ -15,7 +14,7 @@ import org.jetbrains.anko.info
 
 class BatteryBroadcastReceiver : BroadcastReceiver(), AnkoLogger {
 
-    val CHANNEL_ID = "com.spectralink.battery"
+    val CHANNEL_ID = "com.spectralink.com.spectralink.slnkbattlife"
     val NOT_PLUGGED_IN = "Not plugged in"
     val NOTIFICATION_ID = 445464
 
@@ -26,7 +25,7 @@ class BatteryBroadcastReceiver : BroadcastReceiver(), AnkoLogger {
 
         val plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0)
         val isPluggedIn = plugged == BatteryManager.BATTERY_PLUGGED_AC || plugged == BatteryManager.BATTERY_PLUGGED_USB || plugged == BatteryManager.BATTERY_PLUGGED_WIRELESS
-        info { "Current battery level: {$level} , is plugged in ${isPluggedIn}" }
+        info { "Current com.spectralink.slnkbattlife level: {$level} , is plugged in ${isPluggedIn}" }
         info{"Battery monitoring enabled ${prefs.enabled}"}
         if(!isPluggedIn && prefs.enabled){
             if(level <= prefs.level1){

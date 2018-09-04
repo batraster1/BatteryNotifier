@@ -1,4 +1,4 @@
-package com.spectralink.battery
+package com.spectralink.slnkbattlife
 
 import org.junit.Test
 

@@ -1,16 +1,14 @@
-package com.spectralink.battery
+package com.spectralink.slnkbattlife
 
 import android.content.Context
 import android.content.SharedPreferences
 
 class Prefs (context: Context) {
-    private val PREFS_FILENAME = "com.spectralink.battery.prefs"
+    private val PREFS_FILENAME = "com.spectralink.com.spectralink.slnkbattlife.prefs"
     private val BATTERY_LEVEL = "currentLevel"
     private val BATTERY_STATUS = "status"
     private val LEVEL1 = "level1"
     private val VIBRATE1 = "vibrate1"
-    private val LEVEL2 = "level2"
-    private val VIBRATE2 = "vibrate2"
     private val ENABLED = "enabled"
 
     val prefs: SharedPreferences = context.getSharedPreferences(PREFS_FILENAME, 0);
@@ -34,16 +32,4 @@ class Prefs (context: Context) {
     var vibrateEnabled1: Boolean
         get() = prefs.getBoolean(VIBRATE1, false)
         set(vibrateEnabled1) = prefs.edit().putBoolean(VIBRATE1, vibrateEnabled1).apply()
-
-    var level2: Int
-        get() = prefs.getInt(LEVEL2, 50)
-        set(level2) = prefs.edit().putInt(LEVEL2, level2).apply()
-
-    var vibrateEnabled2: Boolean
-        get() = prefs.getBoolean(VIBRATE2, false)
-        set(vibrateEnabled2) = prefs.edit().putBoolean(VIBRATE2, vibrateEnabled2).apply()
-
-
-
-
 }
